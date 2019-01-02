@@ -1,7 +1,11 @@
 # ble-explorer
 React native blue tooth explorer
 
-List bluetooth devices, actually filtering HRM service, on click on characteristic begin subscription to it.
+Project base on react-native init and not CRNA.
+This project uses polidea blue toth library (thanks).
+The App list bluetooth devices, and services and characteristics, actually filtering HRM service, press a device for stop scanning, and then press on characteristic to begin a subscription to its data.
+
+For android it requires ANDROID_HOME to be defined, in my case =/home/hans/Android/Sdk
 
 To run the code use:
 yarn start 
