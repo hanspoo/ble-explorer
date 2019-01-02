@@ -11,4 +11,4 @@ To run the code use:
 yarn start 
 react-native run-android
 
-For testing purposes i'm using the HRM emulator of BLE Peripheral Simulator.
+For testing purposes i'm using the Android App "BLE Peripheral Simulator".
