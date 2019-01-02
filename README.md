@@ -10,3 +10,5 @@ For android it requires ANDROID_HOME to be defined, in my case =/home/hans/Andro
 To run the code use:
 yarn start 
 react-native run-android
+
+For testing purposes i'm using the HRM emulator of BLE Peripheral Simulator.
