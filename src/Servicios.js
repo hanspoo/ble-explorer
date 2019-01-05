@@ -260,5 +260,11 @@ const servicios = [
     uniformTypeIdentifier: 'org.bluetooth.service.weight_scale',
     assignedNumber: '0x181D',
     specification: 'GSS'
+  },
+  {
+    name: 'Escala AndesFit',
+    uniformTypeIdentifier: 'org.bluetooth.service.andesFit_weight_scale',
+    assignedNumber: '0xFFF0',
+    specification: 'GSS'
   }
 ];

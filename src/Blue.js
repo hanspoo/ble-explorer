@@ -42,7 +42,8 @@ export default class App extends Component {
       paso: Pasos.SEL_DISP,
       devices: [],
       device: null,
-      filtro: ['0x180D']
+      filtro: null
+      // filtro: ['0x180D']
     };
   }
 
