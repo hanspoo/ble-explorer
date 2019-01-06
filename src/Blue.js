@@ -187,8 +187,9 @@ export default class App extends Component {
 
       // const array = new Uint8Array(new ArrayBuffer(decodedValue.length));
       const enc = new TextEncoder();
+      const uintArray = enc.encode(s);
       // console.log(enc.encode(s)[1]);
-      this.setState({ valor: enc.encode(s)[1] });
+      this.setState({ valor: uintArray.length === 1 ? uintArray[0] : uintArray[1] });
 
       // console.log('decodedValue', decodedValue);
       // const value = parseFloat(decodedValue);
