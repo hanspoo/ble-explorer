@@ -1,17 +1,36 @@
 import React, { Component, Fragment } from 'react';
 import { Thumbnail } from 'native-base';
+import { connect } from 'react-redux';
 import { View, Text } from 'react-native';
-import { shape } from 'prop-types';
+import { shape, func } from 'prop-types';
 
 import IndicadoresAdulto from '../indicadores/IndicadoresAdulto';
 import { tipoAdulto } from '../types/tipos';
 
-export default class DetailsScreen extends Component {
+class DetailsScreen extends Component {
+  static navigationOptions = ({ navigation }) => ({
+    title: `${navigation.state.params ? navigation.state.params.title : 'Sin título'}`,
+    headerTitleStyle: { textAlign: 'center', alignSelf: 'center' },
+    headerStyle: {
+      backgroundColor: 'white'
+    }
+  });
+
   static propTypes = {
-    adulto: shape(tipoAdulto).isRequired
+    adulto: shape(tipoAdulto).isRequired,
+    navigation: shape({
+      navigate: func.isRequired
+    }).isRequired
   };
 
   state = {};
+
+  componentDidMount() {
+    const { adulto, navigation } = this.props;
+    navigation.setParams({
+      title: adulto.nombre
+    });
+  }
 
   render() {
     const { adulto } = this.props;
@@ -39,3 +58,6 @@ export default class DetailsScreen extends Component {
     );
   }
 }
+
+const s2p = state => ({ adulto: state.adultosReducer.adulto });
+export default connect(s2p)(DetailsScreen);

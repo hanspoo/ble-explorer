@@ -7,7 +7,7 @@ const AppNavigator = createStackNavigator({
   Home: {
     screen: HomeScreen
   },
-  Details: { screen: conAdultoActual(DetailsScreen) }
+  Details: { screen: DetailsScreen }
 });
 
 export default createAppContainer(AppNavigator);

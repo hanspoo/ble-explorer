@@ -22,6 +22,6 @@ const nativeBaseDec = story => (
 
 storiesOf('Detalles Persona', module) //
   // .addDecorator(nativeBaseDec)
-  .add('Persona', () => <DetailsScreen adulto={carlitos} />)
+  // .add('Persona', () => <DetailsScreen adulto={carlitos} />)
   .add('Indicador blue', () => <IndicadorBlue indi={hrm} />);
 storiesOf('App Full', module).add('Aplicación completa', () => <RealApp />);

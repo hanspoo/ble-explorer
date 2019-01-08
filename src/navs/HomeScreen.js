@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { Text, ScrollView } from 'react-native';
-import {
-  List, ListItem, Thumbnail, Left, Body, Right
-} from 'native-base';
+import { List, ListItem, Thumbnail, Left, Body, Right } from 'native-base';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { cargarAdultos, setAdultoActual } from '../redux/adultosReducer';
@@ -31,7 +29,13 @@ class HomeScreen extends Component {
     } = this.props;
 
     setAdultoActual(id);
-    navigate('Details');
+
+    const {
+      adultosReducer: { adultos }
+    } = this.props;
+
+    const adulto = adultos.filter(a => a.id === id).pop();
+    navigate('Details', { id, title: adulto.nombre });
   };
 
   render() {
@@ -46,20 +50,14 @@ class HomeScreen extends Component {
         <Text style={{ paddingLeft: 14, paddingTop: 14 }}>{`Hay ${adultos.length} personas`}</Text>
 
         <List>
-          {adultos.map(({
-            id, nombre, avatar, edad
-          }) => (
+          {adultos.map(({ id, nombre, avatar, edad }) => (
             <ListItem key={id} avatar onPress={this.gotoDetalle(id)}>
               <Left>
                 <Thumbnail source={{ uri: avatar }} />
               </Left>
               <Body>
                 <Text>{nombre}</Text>
-                <Text note>
-                  {edad}
-                  {' '}
-años
-                </Text>
+                <Text note>{edad} años</Text>
               </Body>
               <Right>
                 <Text note>3:43 pm</Text>

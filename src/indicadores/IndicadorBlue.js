@@ -5,6 +5,14 @@ import { shape } from 'prop-types';
 import { tipoIndicador } from '../types/tipos';
 
 export default class Indicador extends React.Component {
+  static navigationOptions = ({ navigation }) => ({
+    title: `${navigation.state.params ? navigation.state.params.title : 'Sin título'}`,
+    headerTitleStyle: { textAlign: 'center', alignSelf: 'center' },
+    headerStyle: {
+      backgroundColor: 'white'
+    }
+  });
+
   static propTypes = {
     indi: shape(tipoIndicador).isRequired
   };
@@ -41,7 +49,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
     // height: 100,
-    // backgroundColor: '#eee',
+    // backgroundColor: 'pink'
     // width: '50%',
     // borderWidth: 1,
     // borderColor: '#666',
