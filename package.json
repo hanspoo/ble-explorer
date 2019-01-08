@@ -2,18 +2,26 @@
   "name": "ble-explorer",
   "version": "0.0.1",
   "scripts": {
-    "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest"
+    "start": "node --max-old-space-size=4096 node_modules/react-native/local-cli/cli.js start",
+    "test": "jest",
+    "storybook": "storybook start"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "base-64": "^0.1.0",
     "eslint-config-prettier": "^3.3.0",
     "lodash": "^4.17.11",
     "native-base": "^2.8.1",
+    "prop-types": "^15.6.2",
     "react": "16.6.0-alpha.8af6728",
     "react-native": "0.57.5",
     "react-native-base64": "^0.0.2",
-    "react-native-ble-plx": "1.0.1"
+    "react-native-ble-plx": "1.0.1",
+    "react-native-gesture-handler": "^1.0.12",
+    "react-navigation": "^3.0.9",
+    "react-redux": "^6.0.0",
+    "redux": "^4.0.1",
+    "redux-promise-middleware": "^5.1.1"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",
@@ -25,7 +33,14 @@
     "eslint-plugin-react": "^7.12.0",
     "jest": "23.6.0",
     "metro-react-native-babel-preset": "^0.48.5",
-    "react-test-renderer": "16.6.0-alpha.8af6728"
+    "react-test-renderer": "16.6.0-alpha.8af6728",
+    "@storybook/react-native": "^4.1.4",
+    "@storybook/addon-actions": "^4.1.4",
+    "@storybook/addon-links": "^4.1.4",
+    "@storybook/addons": "^4.1.4",
+    "babel-core": "^6.26.3",
+    "babel-runtime": "^6.26.0",
+    "react-dom": "16.6.0-alpha.8af6728"
   },
   "jest": {
     "preset": "react-native"

@@ -1,0 +1,142 @@
+{
+  "id": 7322939356040,
+  "nombre": "Carlitos Bala",
+  "avatar": "http://localhost:9000/public/images/avatars/hombre.png",
+  "sexo": "HOMBRE",
+  "edad": 79,
+  "coordenadas": {
+    "lat": -33.44115740000001,
+    "lng": -70.65158269999999,
+    "precision": 53
+  },
+  "alertas": [],
+  "indicadores": [
+    {
+      "id": 1,
+      "name": "Pasos",
+      "esNormal": true,
+      "timestamp": 0,
+      "icono": "walk",
+      "min": 0,
+      "max": 0,
+      "points": [],
+      "esVigente": false,
+      "mostrarCentinela": true
+    },
+    {
+      "id": 2,
+      "name": "Glicemia",
+      "esNormal": true,
+      "timestamp": 0,
+      "icono": "medical",
+      "min": 0,
+      "max": 0,
+      "points": [],
+      "esVigente": false,
+      "mostrarCentinela": false
+    },
+    {
+      "id": 3,
+      "name": "Presión",
+      "esNormal": true,
+      "timestamp": 0,
+      "icono": "beaker",
+      "min": 0,
+      "max": 0,
+      "points": [],
+      "esVigente": false,
+      "mostrarCentinela": true
+    },
+    {
+      "id": 4,
+      "name": "Pulso",
+      "esNormal": true,
+      "timestamp": 0,
+      "icono": "heart",
+      "min": 0,
+      "max": 0,
+      "points": [],
+      "esVigente": false,
+      "mostrarCentinela": true
+    },
+    {
+      "id": 5,
+      "name": "GPS",
+      "esNormal": true,
+      "timestamp": 0,
+      "icono": "pin",
+      "min": 0,
+      "max": 0,
+      "points": [],
+      "esVigente": false,
+      "mostrarCentinela": false
+    },
+    {
+      "id": 6,
+      "name": "SOS",
+      "esNormal": true,
+      "timestamp": 0,
+      "icono": "beaker",
+      "min": 0,
+      "max": 0,
+      "points": [],
+      "esVigente": false,
+      "mostrarCentinela": false
+    }
+  ],
+  "dispositivos": [
+    {
+      "id": 6428221238498,
+      "nivelBateria": 0,
+      "imei": 357771807000798,
+      "modelo": "Pulsera H10",
+      "paciente": "Carlitos Bala",
+      "imagen": "6.png",
+      "nivelCarga": "CRITICO",
+      "asignado": true,
+      "testing": false,
+      "socketActivo": false
+    }
+  ],
+  "cuidadores": [
+    {
+      "nombre": "Carol Urzua"
+    },
+    {
+      "nombre": "Mauricio Moya",
+      "telefono": "958270091"
+    }
+  ],
+  "sortParams": {
+    "nivelCreacion": 7322939356040,
+    "nivelActividad": 1544367756,
+    "nivelAlertas": 0
+  },
+  "anillos": [
+    {
+      "nombre": "ssffg",
+      "id": 1311154,
+      "punto": {
+        "lat": -36.7255147094291,
+        "lng": -71.32661316304755,
+        "latitude": -36.7255147094291,
+        "longitude": -71.32661316304755
+      },
+      "radio": 200,
+      "vigente": true
+    }
+  ],
+  "ultimaActualizacion": {
+    "date": {
+      "year": 2018,
+      "month": 12,
+      "day": 9
+    },
+    "time": {
+      "hour": 12,
+      "minute": 2,
+      "second": 36,
+      "nano": 0
+    }
+  }
+}

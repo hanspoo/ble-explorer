@@ -1,16 +1,18 @@
 module.exports = {
-  'extends': 'airbnb',
-  'parser': 'babel-eslint',
-  'env': {
-    'jest': true,
+  extends: 'airbnb',
+  parser: 'babel-eslint',
+  env: {
+    jest: true
   },
-  'rules': {
+  rules: {
+    'arrow-parens': 'off',
+    'object-curly-newline': 'off',
     'no-use-before-define': 'off',
+    'react/destructuring-asignment': 'off',
     'react/jsx-filename-extension': 'off',
-    'react/prop-types': 'off',
     'comma-dangle': 'off'
   },
-  'globals': {
-    "fetch": false
+  globals: {
+    fetch: false
   }
-}
+};

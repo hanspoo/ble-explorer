@@ -1,21 +1,12 @@
-import React from 'react';
-import { ActivityIndicator } from 'react-native';
-import { Root, Container } from 'native-base';
-import BlueConfig from './src/BlueConfig';
-// import Pink from "./src/Pink";
+// eslint no-undef 0
+import axios from 'axios';
 
-export default class App extends React.Component {
-  state = {
-    loading: false
-  };
+import StorybookUI from './storybook';
 
-  render() {
-    const { loading } = this.state;
+import RealApp from './RealApp';
 
-    return (
-      <Root>
-        <Container>{loading ? <ActivityIndicator /> : <BlueConfig />}</Container>
-      </Root>
-    );
-  }
-}
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+axios.defaults.headers.post.Accept = 'application/json';
+axios.defaults.withCredentials = true;
+
+module.exports = __DEV__ ? StorybookUI : RealApp;
