@@ -1,9 +1,19 @@
 import React, { Component, Fragment } from 'react';
 import _ from 'lodash';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, PermissionsAndroid } from 'react-native';
 import base64 from 'base-64';
 import {
-  Toast, Button, Body, Text, List, ListItem, Left, Right, Icon, View
+  Spinner,
+  Toast,
+  Button,
+  Body,
+  Text,
+  List,
+  ListItem,
+  Left,
+  Right,
+  Icon,
+  View
 } from 'native-base';
 import { BleManager } from 'react-native-ble-plx';
 import buscarCaracteristica from './Caracteristicas';
@@ -37,6 +47,7 @@ export default class App extends Component {
     super(props);
     this.manager = new BleManager();
     this.state = {
+      permisoConcedido: null,
       carac: null,
       valor: null,
       paso: Pasos.SEL_DISP,
@@ -48,7 +59,8 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    this.manager.onStateChange((newState) => {
+    this.requestCameraPermission();
+    this.manager.onStateChange(newState => {
       // console.log("newState", newState);
       if (newState !== 'PoweredOn') return;
       this.log('Started scanning...');
@@ -58,6 +70,7 @@ export default class App extends Component {
           allowDuplicates: true
         },
         (error, device) => {
+          console.log('device', device);
           if (error) {
             Toast.show({
               text: `Error: ${error.message}`
@@ -71,21 +84,21 @@ export default class App extends Component {
     }, true);
   }
 
-  agregarCaracteristicaArray = (arr) => {
+  agregarCaracteristicaArray = arr => {
     arr.forEach(c => this.agregarCaracteristica(c));
   };
 
-  buscarDevice = (deviceID) => {
+  buscarDevice = deviceID => {
     const { devices } = this.state;
     const list = devices.filter(({ id }) => id === deviceID);
     return list.length > 0 ? list.pop() : null;
   };
 
-  agregarServicios = (servicios) => {
+  agregarServicios = servicios => {
     servicios.forEach(s => this.agregarServicio(s));
   };
 
-  agregarServicio = (s) => {
+  agregarServicio = s => {
     const { filtro } = this.state;
 
     const cod = shortUUID(s.uuid);
@@ -125,28 +138,28 @@ export default class App extends Component {
     return device.servicios.filter(s => s.uuid === serv.uuid).length > 0;
   };
 
-  procesarServicios = (device) => {
+  procesarServicios = device => {
     device
       .connect()
       .then(d => d.discoverAllServicesAndCharacteristics())
-      .then((d) => {
+      .then(d => {
         // Do work on device with services and characteristics
         console.log('services and characteristics', d);
       })
-      .catch((error) => {
+      .catch(error => {
         console.log('error', error);
       });
   };
 
-  logError = (e) => {
+  logError = e => {
     console.log(e);
   };
 
-  log = (e) => {
+  log = e => {
     console.log(e);
   };
 
-  agregarDevice = (device) => {
+  agregarDevice = device => {
     const { devices } = this.state;
     if (devices.filter(d => d.name === device.name).length > 0) return;
 
@@ -197,10 +210,8 @@ export default class App extends Component {
     }
   };
 
-  onCaracSelected = (carac) => {
-    const {
-      deviceID, serviceUUID, uuid, isWritableWithoutResponse
-    } = carac;
+  onCaracSelected = carac => {
+    const { deviceID, serviceUUID, uuid, isWritableWithoutResponse } = carac;
 
     this.setState({ carac });
 
@@ -215,7 +226,7 @@ export default class App extends Component {
     );
   };
 
-  caracteristicas = (s) => {
+  caracteristicas = s => {
     const { caracs } = s;
 
     if (!caracs || caracs.length === 0) return null;
@@ -223,11 +234,7 @@ export default class App extends Component {
     return (
       <List>
         <ListItem key="123456">
-          <Text>
-            {caracs.length}
-            {' '}
-características
-          </Text>
+          <Text>{caracs.length} características</Text>
         </ListItem>
 
         {caracs.map(c => (
@@ -239,7 +246,7 @@ características
     );
   };
 
-  serviceList = (device) => {
+  serviceList = device => {
     const services = device.servicios;
 
     if (!services || services.length === 0) return null;
@@ -249,9 +256,7 @@ características
         <ListItem key="123456">
           <Text>
             Hay
-            {services.length}
-            {' '}
-servicios
+            {services.length} servicios
           </Text>
         </ListItem>
 
@@ -274,19 +279,43 @@ servicios
     device
       .connect()
       .then(d => d.discoverAllServicesAndCharacteristics())
-      .then(d => d
-        .services()
-        .then((services) => {
-          this.agregarServicios(services);
+      .then(d =>
+        d
+          .services()
+          .then(services => {
+            this.agregarServicios(services);
 
-          const promesas = services.map(s => s.characteristics());
-          return Promise.all(promesas);
-        })
-        .then(caracs => caracs.forEach(arr => this.agregarCaracteristicaArray(arr)))
-        .catch((err) => {
-          console.log('err', err);
-        }));
+            const promesas = services.map(s => s.characteristics());
+            return Promise.all(promesas);
+          })
+          .then(caracs => caracs.forEach(arr => this.agregarCaracteristicaArray(arr)))
+          .catch(err => {
+            console.log('err', err);
+          })
+      );
   };
+
+  async requestCameraPermission() {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
+        {
+          title: 'Se necesita acceso bluetooth',
+          message:
+            'Necesario para poder acceder a los dispositivos  ' + 'y poder medir los indicadores.'
+        }
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('You can use the camera');
+        this.setState({ permisoConcedido: true });
+      } else {
+        console.log('Camera permission denied');
+        this.setState({ permisoConcedido: false });
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  }
 
   agregarCaracteristica(c) {
     console.log('agregarCaracteristica', c);
@@ -321,9 +350,15 @@ servicios
   }
 
   render() {
-    const {
-      carac, paso, device, valor
-    } = this.state;
+    const { permisoConcedido, carac, paso, device, valor } = this.state;
+    if (permisoConcedido === null) {
+      return <Spinner />;
+    }
+
+    if (permisoConcedido === false) {
+      return <Text>Debe dar los permisos para usar el Bluetooth</Text>;
+    }
+
     if (carac) {
       return (
         <View style={styles.hrmContainer}>
