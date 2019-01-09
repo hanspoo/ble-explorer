@@ -1,15 +1,10 @@
 import React from 'react';
 import _ from 'lodash';
 import { PermissionsAndroid, Alert } from 'react-native';
+import { Spinner } from 'native-base';
 import base64 from 'base-64';
 import { BleManager } from 'react-native-ble-plx';
-import buscarCaracteristica from '../Caracteristicas';
 import buscarServicio, { shortUUID } from '../Servicios';
-
-const servicioParaDeviceByUUID = (device, serviceUUID) => {
-  const list = device.servicios.filter(s => s.uuid === serviceUUID);
-  return list.length > 0 ? list.pop() : null;
-};
 
 const compareUUID = (uuid, uuidCorto) => {
   if (!uuid || uuid.length < 16) {
@@ -30,20 +25,16 @@ const conBluetooth = (serv, carac, WrappedComponent) => {
       super(props);
       this.manager = new BleManager();
       this.state = {
-        // permisoConcedido: null,
-        // carac: null,
+        permisoConcedido: null,
         valor: null,
         devices: [],
-        // device: null,
         filtro: null
-        // filtro: ['0x180D']
       };
     }
 
     componentDidMount() {
       this.requestCameraPermission();
       this.manager.onStateChange(newState => {
-        // // console.log("newState", newState);
         if (newState !== 'PoweredOn') return;
         this.log('Started scanning...');
         this.manager.startDeviceScan(
@@ -67,10 +58,6 @@ const conBluetooth = (serv, carac, WrappedComponent) => {
     componentWillUnmount() {
       this.manager.stopDeviceScan();
     }
-
-    agregarCaracteristicaArray = arr => {
-      arr.forEach(c => this.agregarCaracteristica(c));
-    };
 
     buscarDevice = deviceID => {
       const { devices } = this.state;
@@ -200,29 +187,6 @@ const conBluetooth = (serv, carac, WrappedComponent) => {
       );
     };
 
-    onDeviceSelected = device => () => {
-      this.setState({ device });
-      this.manager.stopDeviceScan();
-
-      device
-        .connect()
-        .then(d => d.discoverAllServicesAndCharacteristics())
-        .then(d =>
-          d
-            .services()
-            .then(services => {
-              this.agregarServicios(services);
-
-              const promesas = services.map(s => s.characteristics());
-              return Promise.all(promesas);
-            })
-            .then(caracs => caracs.forEach(arr => this.agregarCaracteristicaArray(arr)))
-            .catch(err => {
-              console.log('Error en onDeviceSelected', err);
-            })
-        );
-    };
-
     async requestCameraPermission() {
       try {
         const granted = await PermissionsAndroid.request(
@@ -245,44 +209,13 @@ const conBluetooth = (serv, carac, WrappedComponent) => {
       }
     }
 
-    agregarCaracteristica(c) {
-      // console.log('agregarCaracteristica', c);
-      const { devices } = this.state;
-      const { deviceID, serviceUUID } = c;
-
-      const device = this.buscarDevice(deviceID);
-      if (!device) {
-        console.log(`agregarCaracteristica, device ${deviceID} no encontrado, no se agregó carac`);
-        return;
-      }
-
-      const servicio = servicioParaDeviceByUUID(device, serviceUUID);
-
-      if (!servicio) {
-        console.log(
-          `agregarCaracteristica, device ${
-            device.id
-          } no tiene servicio ${serviceUUID}, no agrega carac`
-        );
-        return;
-      }
-
-      if (!servicio.caracs) servicio.caracs = [];
-
-      const isoName = buscarCaracteristica(c.uuid);
-      const car = { ...c, name: isoName ? isoName.name : 'UUID no encontrado' };
-
-      servicio.caracs = [...servicio.caracs, car];
-
-      const newServs = device.servicios.map(s => (s.uuid === serviceUUID ? servicio : s));
-      const newDev = { ...device, servicios: newServs };
-      const newDevs = devices.map(d => (d.id === deviceID ? newDev : d));
-
-      this.setState({ devices: newDevs });
-    }
-
     render() {
-      const { valor } = this.state;
+      const { valor, permisoConcedido } = this.state;
+      if (permisoConcedido === null) return <Spinner />;
+      if (permisoConcedido === false) {
+        Alert.alert('Debe habilitar localización para usar este servicio');
+      }
+
       return <WrappedComponent {...this.props} value={valor} />;
     }
   }
