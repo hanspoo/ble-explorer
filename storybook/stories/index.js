@@ -43,6 +43,7 @@ class HrmView extends React.Component {
 }
 
 const CustomComp = conBluetooth('0x180D', '0x2A37', HrmView);
+
 console.log('CustomComp', typeof CustomComp);
 storiesOf('Detalles Persona', module) //
   .addDecorator(nativeBaseDec)
