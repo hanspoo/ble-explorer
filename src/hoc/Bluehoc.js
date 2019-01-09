@@ -11,7 +11,16 @@ const servicioParaDeviceByUUID = (device, serviceUUID) => {
   return list.length > 0 ? list.pop() : null;
 };
 
-const compareUUID = (uuid, uuidCorto) => shortUUID(uuid) === uuidCorto;
+const compareUUID = (uuid, uuidCorto) => {
+  if (!uuid || uuid.length < 16) {
+    throw new Error(`Debe entregar el uuid ${uuid}`);
+  }
+  if (!uuidCorto || uuidCorto.length < 4) {
+    throw new Error(`Debe entregar el uuidCorto ${uuidCorto}`);
+  }
+
+  return shortUUID(uuid) === uuidCorto;
+};
 
 const conBluetooth = (serv, carac, WrappedComponent) => {
   class HOC extends React.Component {
@@ -21,11 +30,11 @@ const conBluetooth = (serv, carac, WrappedComponent) => {
       super(props);
       this.manager = new BleManager();
       this.state = {
-        permisoConcedido: null,
-        carac: null,
+        // permisoConcedido: null,
+        // carac: null,
         valor: null,
         devices: [],
-        device: null,
+        // device: null,
         filtro: null
         // filtro: ['0x180D']
       };
@@ -34,7 +43,7 @@ const conBluetooth = (serv, carac, WrappedComponent) => {
     componentDidMount() {
       this.requestCameraPermission();
       this.manager.onStateChange(newState => {
-        // console.log("newState", newState);
+        // // console.log("newState", newState);
         if (newState !== 'PoweredOn') return;
         this.log('Started scanning...');
         this.manager.startDeviceScan(
@@ -43,8 +52,8 @@ const conBluetooth = (serv, carac, WrappedComponent) => {
             allowDuplicates: false
           },
           (error, device) => {
-            console.log('Error device', device);
             if (error) {
+              console.log('Error device', device);
               Alert.alert(`Error: ${error.message}`);
               return;
             }
@@ -92,7 +101,7 @@ const conBluetooth = (serv, carac, WrappedComponent) => {
       }
 
       if (this.deviceTieneServicio(device, s)) {
-        console.log(`device ${device.id} ya tiene servicio ${s.uuid}`);
+        // console.log(`device ${device.id} ya tiene servicio ${s.uuid}`);
         return null;
       }
 
@@ -113,32 +122,18 @@ const conBluetooth = (serv, carac, WrappedComponent) => {
       return device.servicios.filter(s => s.uuid === serv.uuid).length > 0;
     };
 
-    procesarServicios = device => {
-      device
-        .connect()
-        .then(d => d.discoverAllServicesAndCharacteristics())
-        .then(d => {
-          // Do work on device with services and characteristics
-          console.log('services and characteristics', d);
-        })
-        .catch(error => {
-          console.log('error', error);
-        });
-    };
-
     logError = e => {
-      console.log(e);
+      // console.log(e);
     };
 
     log = e => {
-      console.log(e);
+      // console.log(e);
     };
 
-    filtrarServBuscados = services => {
-      console.log(`buscando servicio ${serv} en`, services);
+    filtrarServBuscados = services => services.filter(s => compareUUID(s.uuid, serv));
 
-      return services.filter(s => compareUUID(s.uuid, serv));
-    };
+    filtrarCaracDestino = caracs => caracs.find(c => compareUUID(c.uuid, carac));
+    // filtrarCaracDestino = caracs => null;
 
     agregarDevice = device => {
       const { devices } = this.state;
@@ -154,42 +149,47 @@ const conBluetooth = (serv, carac, WrappedComponent) => {
             .services()
             .then(services => {
               const servBuscados = this.filtrarServBuscados(services);
-              this.agregarServicios(servBuscados);
-
               const promesas = servBuscados.map(s => s.characteristics());
               return Promise.all(promesas);
             })
-            .then(caracs => caracs.forEach(arr => this.agregarCaracteristicaArray(arr)))
+            .then(caracsArrays => {
+              caracsArrays.forEach(caracs => {
+                console.log('caracs', caracs);
+                const caracBuscada = this.filtrarCaracDestino(caracs);
+                if (caracBuscada) {
+                  this.onCaracSelected(caracBuscada);
+                }
+              });
+            })
             .catch(err => {
               console.log('err', err);
             })
         );
     };
 
-    caracListener = (e, carac) => {
-      console.log('caracListener');
-      if (carac && carac.value) {
-        console.log('carac.value', carac.value);
-        const s = base64.decode(carac.value);
+    caracListener = (e, c) => {
+      console.log('caracListener', e);
+      // console.log(`Activando listener de característica ${c.uuid}`);
+      if (c && c.value) {
+        // console.log('c.value', c.value);
+        const s = base64.decode(c.value);
 
         // const array = new Uint8Array(new ArrayBuffer(decodedValue.length));
         const enc = new TextEncoder();
         const uintArray = enc.encode(s);
-        // console.log(enc.encode(s)[1]);
+        // // console.log(enc.encode(s)[1]);
         this.setState({ valor: uintArray.length === 1 ? uintArray[0] : uintArray[1] });
 
-        // console.log('decodedValue', decodedValue);
+        // // console.log('decodedValue', decodedValue);
         // const value = parseFloat(decodedValue);
-        // console.log('value', value);
+        // // console.log('value', value);
       }
     };
 
-    onCaracSelected = carac => {
-      const { deviceID, serviceUUID, uuid, isWritableWithoutResponse } = carac;
+    onCaracSelected = c => {
+      const { deviceID, serviceUUID, uuid, isWritableWithoutResponse } = c;
 
-      this.setState({ carac });
-
-      console.log('c.isWritableWithoutResponse', isWritableWithoutResponse);
+      // console.log('c.isWritableWithoutResponse', isWritableWithoutResponse);
 
       this.subs = this.manager.monitorCharacteristicForDevice(
         deviceID,
@@ -218,7 +218,7 @@ const conBluetooth = (serv, carac, WrappedComponent) => {
             })
             .then(caracs => caracs.forEach(arr => this.agregarCaracteristicaArray(arr)))
             .catch(err => {
-              console.log('err', err);
+              console.log('Error en onDeviceSelected', err);
             })
         );
     };
@@ -234,10 +234,10 @@ const conBluetooth = (serv, carac, WrappedComponent) => {
           }
         );
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          console.log('You can use the camera');
+          // console.log('You can use the camera');
           this.setState({ permisoConcedido: true });
         } else {
-          console.log('Camera permission denied');
+          // console.log('Camera permission denied');
           this.setState({ permisoConcedido: false });
         }
       } catch (err) {
@@ -246,20 +246,24 @@ const conBluetooth = (serv, carac, WrappedComponent) => {
     }
 
     agregarCaracteristica(c) {
-      console.log('agregarCaracteristica', c);
+      // console.log('agregarCaracteristica', c);
       const { devices } = this.state;
       const { deviceID, serviceUUID } = c;
 
       const device = this.buscarDevice(deviceID);
       if (!device) {
-        console.log(`device ${deviceID} no encontrado, no se agregó carac`);
+        console.log(`agregarCaracteristica, device ${deviceID} no encontrado, no se agregó carac`);
         return;
       }
 
       const servicio = servicioParaDeviceByUUID(device, serviceUUID);
 
       if (!servicio) {
-        console.log(`device ${device.id} no tiene servicio ${serviceUUID}, no agrega carac`);
+        console.log(
+          `agregarCaracteristica, device ${
+            device.id
+          } no tiene servicio ${serviceUUID}, no agrega carac`
+        );
         return;
       }
 
@@ -278,7 +282,8 @@ const conBluetooth = (serv, carac, WrappedComponent) => {
     }
 
     render() {
-      return <WrappedComponent {...this.props} value={42} />;
+      const { valor } = this.state;
+      return <WrappedComponent {...this.props} value={valor} />;
     }
   }
 
