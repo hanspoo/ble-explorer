@@ -1,5 +1,5 @@
 import React from 'react';
-import { Fragment, Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet } from 'react-native';
 import { Icon, Spinner } from 'native-base';
 import { shape, number } from 'prop-types';
 import { tipoIndicador } from '../types/tipos';
