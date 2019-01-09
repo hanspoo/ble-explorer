@@ -84,6 +84,10 @@ export default class App extends Component {
     }, true);
   }
 
+  componentWillUnmount() {
+    this.manager.stopDeviceScan();
+  }
+
   agregarCaracteristicaArray = arr => {
     arr.forEach(c => this.agregarCaracteristica(c));
   };
