@@ -1,10 +1,11 @@
 import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { Fragment, Text, View, StyleSheet } from 'react-native';
 import { Icon, Spinner } from 'native-base';
-import { shape } from 'prop-types';
+import { shape, number } from 'prop-types';
 import { tipoIndicador } from '../types/tipos';
+import conBluetooth from '../hoc/Bluehoc';
 
-export default class Indicador extends React.Component {
+class IndicadorBlue extends React.Component {
   static navigationOptions = ({ navigation }) => ({
     title: `${navigation.state.params ? navigation.state.params.title : 'Sin título'}`,
     headerTitleStyle: { textAlign: 'center', alignSelf: 'center' },
@@ -14,23 +15,31 @@ export default class Indicador extends React.Component {
   });
 
   static propTypes = {
+    value: number,
     indi: shape(tipoIndicador).isRequired
+  };
+
+  static defaultProps = {
+    value: null
   };
 
   state = {};
 
   render() {
-    const { indi } = this.props;
+    const { indi, value } = this.props;
     return (
       <View style={styles.container}>
         <Text style={styles.text}>{indi.nombre}</Text>
         <Icon name={indi.icono} style={styles.icon} type="FontAwesome" />
 
-        <Spinner />
-        <View style={{ flexDirection: 'row' }}>
-          <Icon name="bluetooth" style={styles.blueIcon} type="FontAwesome" />
-          <Text>Buscando dispositivos...</Text>
-        </View>
+        {value !== null ? (
+          <Text style={styles.value}>{value}</Text>
+        ) : (
+          <View>
+            <Spinner />
+            <Text>Buscando dispositivos...</Text>
+          </View>
+        )}
       </View>
     );
   }
@@ -42,6 +51,7 @@ export default class Indicador extends React.Component {
 const styles = StyleSheet.create({
   blueIcon: { color: 'blue', fontSize: 20, marginRight: 4 },
   text: { fontSize: 18, color: 'black', fontWeight: 'bold' },
+  value: { fontSize: 64, color: 'rgba(255,0,0,0.5)' },
   icon: { fontSize: 64, color: 'rgba(255,0,0,0.5)' },
   container: {
     flex: 1,
@@ -56,3 +66,5 @@ const styles = StyleSheet.create({
     // margin: 2
   }
 });
+
+export default conBluetooth('0x180D', '0x2A37', IndicadorBlue);

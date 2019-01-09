@@ -18,7 +18,7 @@ const compareUUID = (uuid, uuidCorto) => {
 
 const conBluetooth = (serv, carac, WrappedComponent) => {
   class HOC extends React.Component {
-    state = {};
+    state = { error: null };
 
     constructor(props) {
       super(props);
@@ -46,7 +46,14 @@ const conBluetooth = (serv, carac, WrappedComponent) => {
               Alert.alert(`Error: ${error.message}`);
               return;
             }
-            if (device.name) this.agregarDevice(device);
+            if (device.name) {
+              try {
+                this.agregarDevice(device);
+              } catch (e) {
+                this.setState({ error: e });
+                console.log(e);
+              }
+            }
           }
         );
       }, true);
@@ -85,7 +92,7 @@ const conBluetooth = (serv, carac, WrappedComponent) => {
               });
             })
             .catch(err => {
-              console.err('err', err);
+              console.log('err', err);
             });
         });
     };
@@ -126,18 +133,18 @@ const conBluetooth = (serv, carac, WrappedComponent) => {
           this.setState({ permisoConcedido: false });
         }
       } catch (err) {
-        console.err(err);
+        console.log(err);
       }
     }
 
     render() {
-      const { valor, permisoConcedido } = this.state;
+      const { valor, permisoConcedido, error } = this.state;
       if (permisoConcedido === null) return <Spinner />;
       if (permisoConcedido === false) {
         Alert.alert('Debe habilitar localización para usar este servicio');
       }
 
-      return <WrappedComponent {...this.props} value={valor} />;
+      return <WrappedComponent error={error} {...this.props} value={valor} />;
     }
   }
 
