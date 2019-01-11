@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Icon, Spinner, Button, Text } from 'native-base';
-import { shape, number } from 'prop-types';
+import { shape, number, func } from 'prop-types';
 import { tipoIndicador } from '../types/tipos';
 import conBluetooth from '../hoc/Bluehoc';
 
@@ -16,7 +16,8 @@ class IndicadorBlue extends React.Component {
 
   static propTypes = {
     value: number,
-    indi: shape(tipoIndicador).isRequired
+    indi: shape(tipoIndicador).isRequired,
+    addMedicion: func.isRequired
   };
 
   static defaultProps = {
@@ -24,6 +25,11 @@ class IndicadorBlue extends React.Component {
   };
 
   state = {};
+
+  agregarMedicion = () => {
+    const { value, addMedicion } = this.props;
+    addMedicion(value);
+  };
 
   render() {
     const { indi, value } = this.props;
@@ -38,7 +44,7 @@ class IndicadorBlue extends React.Component {
 
         {value !== null ? (
           <View style={{ flexDirection: 'row' }}>
-            <Button block primary>
+            <Button block primary onPress={this.agregarMedicion}>
               <Text>Grabar</Text>
             </Button>
             <Button block light>

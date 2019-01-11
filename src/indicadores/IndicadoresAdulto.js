@@ -35,7 +35,7 @@ export default class IndicadoresAdulto extends React.Component {
     const { indi } = this.state;
 
     if (indi) {
-      return <IndicadorBlue indi={indi} />;
+      return <IndicadorBlue indi={indi} addMedicion={this.addMedicion} />;
     }
     return (
       <View style={styles.container}>
