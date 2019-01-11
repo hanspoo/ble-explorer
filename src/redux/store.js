@@ -8,7 +8,7 @@ const rootReducer = combineReducers({
   adultosReducer
 });
 
-const composeStoreWithMiddleware = applyMiddleware(promiseMiddleware(), errorMiddleware)(
+const composeStoreWithMiddleware = applyMiddleware(errorMiddleware, promiseMiddleware())(
   createStore
 );
 

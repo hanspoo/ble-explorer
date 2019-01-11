@@ -28,11 +28,12 @@ const conBluetooth = (serv, carac, WrappedComponent) => {
         valor: null,
         devices: []
       };
+      this.subscription = null;
     }
 
     componentDidMount() {
       this.requestCameraPermission();
-      this.manager.onStateChange(newState => {
+      this.subscription = this.manager.onStateChange(newState => {
         if (newState !== 'PoweredOn') return;
         console.log('Started scanning...');
         this.manager.startDeviceScan(
@@ -61,6 +62,7 @@ const conBluetooth = (serv, carac, WrappedComponent) => {
 
     componentWillUnmount() {
       this.manager.stopDeviceScan();
+      this.subscription.remove();
     }
 
     filtrarServBuscados = services => services.filter(s => compareUUID(s.uuid, serv));
@@ -94,7 +96,8 @@ const conBluetooth = (serv, carac, WrappedComponent) => {
             .catch(err => {
               console.log('err', err);
             });
-        });
+        })
+        .catch(err => console.log(err));
     };
 
     caracListener = (e, c) => {
@@ -109,6 +112,8 @@ const conBluetooth = (serv, carac, WrappedComponent) => {
 
     onCaracSelected = c => {
       const { deviceID, serviceUUID, uuid } = c;
+      this.manager.stopDeviceScan();
+
       this.subs = this.manager.monitorCharacteristicForDevice(
         deviceID,
         serviceUUID,

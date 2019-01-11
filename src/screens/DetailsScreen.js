@@ -1,10 +1,8 @@
-import React, { Component, Fragment } from 'react';
-import { Thumbnail } from 'native-base';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { View, Text } from 'react-native';
+import { Text } from 'react-native';
 import { shape, func } from 'prop-types';
-
-import IndicadoresAdulto from '../indicadores/IndicadoresAdulto';
+import DetailsComponent from '../components/DetailsComponent';
 import { tipoAdulto } from '../types/tipos';
 
 class DetailsScreen extends Component {
@@ -36,26 +34,7 @@ class DetailsScreen extends Component {
     const { adulto } = this.props;
     if (!adulto) return <Text>Error interno, no hay adulto actual.</Text>;
 
-    const { id, nombre, edad, avatar } = adulto;
-    return (
-      <Fragment>
-        <View style={{ flex: 1 / 3, alignItems: 'center', justifyContent: 'center' }}>
-          <Thumbnail source={{ uri: avatar }} />
-          <Text>{nombre}</Text>
-        </View>
-
-        <View
-          style={{
-            flex: 2 / 3,
-            backgroundColor: 'rgba(0,0,125,0.1)',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-        >
-          <IndicadoresAdulto adulto={adulto} />
-        </View>
-      </Fragment>
-    );
+    return <DetailsComponent adulto={adulto} />;
   }
 }
 

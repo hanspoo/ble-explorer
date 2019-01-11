@@ -1,6 +1,6 @@
 import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
-import { Icon, Spinner } from 'native-base';
+import { View, StyleSheet } from 'react-native';
+import { Icon, Spinner, Button, Text } from 'native-base';
 import { shape, number } from 'prop-types';
 import { tipoIndicador } from '../types/tipos';
 import conBluetooth from '../hoc/Bluehoc';
@@ -29,11 +29,22 @@ class IndicadorBlue extends React.Component {
     const { indi, value } = this.props;
     return (
       <View style={styles.container}>
-        <Text style={styles.text}>{indi.nombre}</Text>
-        <Icon name={indi.icono} style={styles.icon} type="FontAwesome" />
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Icon name={indi.icono} style={styles.icon} type="FontAwesome" />
+          <Text style={styles.nombreIndicador}>{indi.nombre}</Text>
+        </View>
+
+        {!!value && <Text style={styles.value}>{value}</Text>}
 
         {value !== null ? (
-          <Text style={styles.value}>{value}</Text>
+          <View style={{ flexDirection: 'row' }}>
+            <Button block primary>
+              <Text>Grabar</Text>
+            </Button>
+            <Button block light>
+              <Text>Leer nuevamente</Text>
+            </Button>
+          </View>
         ) : (
           <View>
             <Spinner />
@@ -50,14 +61,16 @@ class IndicadorBlue extends React.Component {
 
 const styles = StyleSheet.create({
   blueIcon: { color: 'blue', fontSize: 20, marginRight: 4 },
-  text: { fontSize: 18, color: 'black', fontWeight: 'bold' },
-  value: { fontSize: 64, color: 'rgba(255,0,0,0.5)' },
-  icon: { fontSize: 64, color: 'rgba(255,0,0,0.5)' },
+  nombreIndicador: { marginLeft: 7, fontSize: 18, color: 'black', fontWeight: 'bold' },
+  value: { fontSize: 128, color: 'rgba(255,0,0,0.5)' },
+  icon: { fontSize: 18, color: 'rgba(255,0,0,0.5)' },
   container: {
     flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    paddingTop: 14
     // borderRadius: 7,
-    justifyContent: 'center',
-    alignItems: 'center'
+
     // height: 100,
     // backgroundColor: 'pink'
     // width: '50%',

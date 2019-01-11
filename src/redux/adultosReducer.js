@@ -19,7 +19,7 @@ const reducer = (state = initialState, action) => {
     case `${entidad}_${REJECTED}`:
       return {
         ...state,
-        errorMessage: `${entidad}:${action.payload.message}`,
+        errorMessage: `${action.payload.message}`,
         loading: false
       };
     case `${entidad}_${PENDING}`: {
@@ -48,7 +48,7 @@ const cargarAdultos = () => {
   return action;
 };
 
-const setAdultoActual = (id) => {
+const setAdultoActual = id => {
   const action = { type: 'SET_ADULTO_ACTUAL', payload: id };
   return action;
 };

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Text, ScrollView } from 'react-native';
-import { List, ListItem, Thumbnail, Left, Body, Right } from 'native-base';
+import { StyleSheet, Text, ScrollView } from 'react-native';
+import { Icon, List, ListItem, Thumbnail, Left, Body, Right } from 'native-base';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { cargarAdultos, setAdultoActual } from '../redux/adultosReducer';
@@ -42,12 +42,14 @@ class HomeScreen extends Component {
     const {
       adultosReducer: { loading, errorMessage, adultos }
     } = this.props;
-    if (loading) return <Text>Cargando...</Text>;
+    if (loading) {
+      return <Text style={styles.bajada}>Cargando...</Text>;
+    }
     if (errorMessage) return <Text>{errorMessage}</Text>;
 
     return (
       <ScrollView>
-        <Text style={{ paddingLeft: 14, paddingTop: 14 }}>{`Hay ${adultos.length} personas`}</Text>
+        <Text style={styles.bajada}>{`Hay ${adultos.length} personas`}</Text>
 
         <List>
           {adultos.map(({ id, nombre, avatar, edad }) => (
@@ -60,7 +62,7 @@ class HomeScreen extends Component {
                 <Text note>{edad} años</Text>
               </Body>
               <Right>
-                <Text note>3:43 pm</Text>
+                <Icon name="arrow-forward" />
               </Right>
             </ListItem>
           ))}
@@ -69,6 +71,10 @@ class HomeScreen extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  bajada: { paddingLeft: 14, paddingTop: 14 }
+});
 
 const s2p = state => ({ adultosReducer: state.adultosReducer });
 

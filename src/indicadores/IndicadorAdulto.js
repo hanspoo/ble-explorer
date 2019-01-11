@@ -35,16 +35,26 @@ export default class Indicador extends React.Component {
 
 const styles = StyleSheet.create({
   text: { fontSize: 14, color: 'black', fontWeight: 'bold' },
-  icon: { fontSize: 64, color: '#666' },
+  icon: {
+    textAlign: 'center',
+    fontSize: 64,
+    color: '#666'
+    // backgroundColor: 'yellow',
+    // flex: 1,
+    // justifyContent: 'center',
+    // alignItems: 'center'
+  },
   container: {
+    backgroundColor: 'yellow',
     borderRadius: 7,
     justifyContent: 'center',
     alignItems: 'center',
     height: 100,
     backgroundColor: '#eee',
-    width: '50%',
+    // width: '50%',
     borderWidth: 1,
     borderColor: '#666',
-    margin: 2
+    margin: 2,
+    flex: 1
   }
 });
